@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+    <input id="normal-text" type="text" value="normal text">
+    
+    <h2>Hello from outside the Shadow DOM!</h2>
+    
+    <!-- This Custom Element will be our Shadow Host and contain the Shadow Root. -->
+    <my-element></my-element>
+    
+    <!-- This template will hold the implementation for our element. -->
+    <template id="tmpl">  
+        <style>
+        h2 {
+          color: blue;
+        }
+        </style>
+        
+        <div class="my-panel" style="margin: 50px; width: 500px; border: 5px solid #000;">
+            <h2>Hello from inside the Shadow DOM with "attachShadow"</h2>    
+            <input id="shadow-text-inside" style="margin: 5px;" type="text" value="shadow text inside">
+        </div>
+    </template>
+    
+    <script src="./bower_components/webcomponentsjs/webcomponents-loader.js"></script>
+    <script src="./bower_components/webcomponentsjs/webcomponents-sd-ce.js"></script>
+    
+    <script>
+    // prepareTemplate takes the template and applies the scoping attributes
+    // to each element and puts styles in the <head>.
+    ShadyCSS.prepareTemplate(tmpl, 'my-el');
+    class MyElement extends HTMLElement {
+        connectedCallback() {
+          // styleElement enables Custom Properties to work on this element
+          // and any of its children.
+          ShadyCSS.styleElement(this);
+          this.attachShadow({mode: 'open'});
+          this.shadowRoot.appendChild(tmpl.content.cloneNode(true));
+        }
+    }
+    customElements.define('my-element', MyElement);
+    </script> 
+    
+</body>
+</html>
